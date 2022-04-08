@@ -1,15 +1,14 @@
 /**
  * @jest-environment jsdom
  */
+
 require("jest-fetch-mock").enableMocks();
 const fs = require("fs");
 const NotesModel = require("./notesModel");
 const NotesView = require("./notesView");
-const NotesApi = require("./notesApi");
 
 let notesView;
 let notesModel;
-let notesApi;
 
 beforeEach(() => {
   document.body.innerHTML = fs.readFileSync("./index.html");
@@ -19,39 +18,48 @@ beforeEach(() => {
     loadNotes: () => ["hello"],
   };
   notesView = new NotesView(notesModel, mockApi);
+  this.mainContainerEl = document.querySelector("#main-container");
+  this.addButton = document.querySelector("#add-button");
+  this.inputField = document.querySelector("#message-input");
 });
 
 describe("notesView", () => {
   it("starts with a list of empty notes", () => {
-    expect(notesView.getModel().getNotes()).toEqual([]);
+    expect(document.querySelector("#main-container :nth-child(1)")).toEqual(
+      null
+    );
   });
 
-  it("adds a note from notesView", () => {
-    notesModel.addNote("HELLO");
-    expect(notesModel.getNotes()).toEqual(["HELLO"]);
-  });
-
-  it("displays the stored notes", async() => {
-    await notesView.addNote("Hi friends", () => {});
+  it("displays the stored notes", async () => {
+    await notesView.addNote();
+    console.log(
+      document.querySelector("#main-container :nth-child(1)").innerText
+    );
     expect(document.querySelectorAll(".note").length).toBe(1);
   });
 
-  it("adds a note to the model with text", async () => {
-    const inputField = document.querySelector("#message-input");
-    inputField.value = "hello";
-    const addButton = document.querySelector("#add-button");
-    addButton.click();
-    setTimeout(() => {expect(document.querySelector(".note")).toBe("hello")}, 0);
-  });
+  // it("clicks add button and we see the first note", async () => {
+  //   await this.addButton.click();
+  //   expect(document.querySelector(".note").innerText).toEqual("hello");
+  // });
 
-  it("clears input field when add note button is clicked", () => {
-    const inputField = document.querySelector("#message-input");
-    inputField.value = "hello";
-    const addButton = document.querySelector("#add-button");
-    addButton.click();
-    setTimeout(() => {expect(document.querySelector("#message-input").value).toBe("")}
-  );
-});
+  // it("adds a note to the model with text", async () => {
+  //   const inputField = document.querySelector("#message-input");
+  //   inputField.value = "hello";
+  //   const addButton = document.querySelector("#add-button");
+  //   addButton.click();
+  //   setTimeout(() => {
+  //     expect(this.firstNote).toBe("hello");
+  //   }, 0);
+  // });
 
-
+  // it("clears input field when add note button is clicked", () => {
+  //   const inputField = document.querySelector("#message-input");
+  //   inputField.value = "hello";
+  //   const addButton = document.querySelector("#add-button");
+  //   addButton.click();
+  //   setTimeout(() => {
+  //     expect(document.querySelector("#message-input").value).toBe("");
+  //   });
+  // });
 });

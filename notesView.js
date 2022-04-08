@@ -3,13 +3,14 @@ class NotesView {
     this.model = model;
     this.api = api;
     this.mainContainerEl = document.querySelector("#main-container");
+    this.setUpEventListeners();
+  }
+
+  setUpEventListeners() {
     this.addButton = document.querySelector("#add-button");
     this.addButton.addEventListener("click", () => {
-      const inputField = document.querySelector("#message-input");
-      // console.log(inputField.value);
-      this.addNote(inputField.value, () => {
-        inputField.value = "";
-      });
+      this.addNote();
+      console.log("i've been clicked");
     });
   }
 
@@ -17,11 +18,10 @@ class NotesView {
     return this.model;
   }
 
-  async addNote(note, callback) {
-    // this.model.addNote(note)
-    // console.log(note)
-    await this.api.createNote(note, () => {});
-    callback();
+  async addNote() {
+    const inputField = document.querySelector("#message-input");
+    await this.api.createNote(inputField.value, () => {});
+    inputField.value = "";
     this.displayNotes();
   }
 
@@ -30,23 +30,24 @@ class NotesView {
     clearNotes.forEach((note) => note.remove());
 
     const serverNotes = await this.api.loadNotes(() => {
-      this.displayError()
+      this.displayError();
     });
     this.model.setNotes(serverNotes);
-    console.log(serverNotes)
+    console.log(serverNotes);
     const notes = this.model.getNotes();
-    console.log(notes)
+    console.log(notes);
     notes.forEach((note) => {
-      // console.log(note)
+      console.log(note);
       const div = document.createElement("div");
       div.innerText = note;
       div.classList.add("note");
       document.querySelector("#main-container").append(div);
     });
+    console.log(document.querySelector(".note"));
   }
 
   displayError() {
-    document.write("Oopsie")
+    document.write("Oopsie");
   }
 }
 

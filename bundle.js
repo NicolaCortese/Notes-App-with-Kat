@@ -41,21 +41,23 @@
           this.model = model;
           this.api = api;
           this.mainContainerEl = document.querySelector("#main-container");
+          this.setUpEventListeners();
+        }
+        setUpEventListeners() {
           this.addButton = document.querySelector("#add-button");
           this.addButton.addEventListener("click", () => {
-            const inputField = document.querySelector("#message-input");
-            this.addNote(inputField.value, () => {
-              inputField.value = "";
-            });
+            this.addNote();
+            console.log("i've been clicked");
           });
         }
         getModel() {
           return this.model;
         }
-        async addNote(note, callback) {
-          await this.api.createNote(note, () => {
+        async addNote() {
+          const inputField = document.querySelector("#message-input");
+          await this.api.createNote(inputField.value, () => {
           });
-          callback();
+          inputField.value = "";
           this.displayNotes();
         }
         async displayNotes() {
@@ -69,11 +71,13 @@
           const notes = this.model.getNotes();
           console.log(notes);
           notes.forEach((note) => {
+            console.log(note);
             const div = document.createElement("div");
             div.innerText = note;
             div.classList.add("note");
             document.querySelector("#main-container").append(div);
           });
+          console.log(document.querySelector(".note"));
         }
         displayError() {
           document.write("Oopsie");
